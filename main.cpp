@@ -185,6 +185,7 @@ private:
 		createGraphicsPipeline();
 		createFramebuffers();
 		createCommandPool();
+		createVertexBuffer();
 		createCommandBuffers();
 		createSyncObjects();
 	}
@@ -1139,6 +1140,13 @@ private:
 		}
 
 		vkDestroySwapchainKHR(device, swapChain, nullptr);
+	}
+
+	void createVertexBuffer()
+	{
+		VkBufferCreateInfo bufferInfo{};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+
 	}
 
 	GLFWwindow* window;
