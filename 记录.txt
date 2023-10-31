@@ -1,0 +1,32 @@
+Instance: 用于关联应用(Application)和Vulkan库，创建时需要指定应用信息、全局扩展（Global Extensions)、全局校验层（Global Validation Layers)
+
+Validation Layers: 一个可选组件，用于检验Vulkan的函数是否正常工作
+
+WindowSurface: 由于Vulkan是平台无关的，Vulkan无法与window system直接通信，要使用WSI(Window System Integration)扩展。VK_KHR_surface暴露了一个VkSurfaceKHR对象，代表一种可将绘制好的图像呈现在其上的抽象Surface类型
+
+Physical device: 代表物理显卡，可以通过指定一些需要的特性对物理显卡进行筛选
+
+Queue Families: Vulkan中的所有操作，包括绘图、上传纹理等，都需要将指令提交到一个队列中。存在多种队列(Queue)来源于不同的队列族（Queue Family），这些队列族支持不同的指令集。
+
+Logic Device: 与Physical Card进行通信的界面，创建Logic Device时需要指定其支持的队列族（Queue Families)，和设备特性（Physical Device Features)。
+
+Swap Chain: Vulkan没有默认帧缓冲区的概念，因此需要一个基础架构来表示要渲染的缓冲区，在缓冲区内容在屏幕上渲染之前，Swap Chain拥有缓冲区的控制权。创建Swap Chain需要物理显卡支持。
+
+Image View: 要在渲染管线中使用任何VkImage（包括Swap Chain中的VkImage），我们必须创建一个VkImageView对象。ImageView其实就是图像的视图。它描述了如何访问图像以及要访问图像的哪一部分，例如，是否应将其视为没有任何mipmaping层的2D深度纹理。
+
+Fixed functions: 渲染管线中的固定功能，包括动态状态(Dynamic state， 指定渲染管线中哪些值会动态变化)，顶点输入(Vertex Input， 指定顶点数据的格式)，输入装配（Input Assembly，控制绘制的几何体以及是否允许图元重启动），视口和裁剪（Viewports and scissors），光栅化（Rasterizer），多重采样（Multisampling），深度和模板测试（Depth and stencil testing），颜色混合（Color blending），管线布局(Pipeline layout）
+
+Attachments：附件，如颜色缓存附件（color buffer attachment）通常由交换链中的一个图像表示。
+
+Framebuffers：在创建Render Pass的过程中指定的附件会被封装到一个VkFramebuffer对象，帧缓存引用了表示附件的所有VkImageView对象。
+
+Command buffers：在Vulkan中诸如绘制，内存交换等命令，并不是直接通过函数调用，而是需要将待执行的操作记录到Command buffer对象中。
+
+Command pools：指令池，在创建命令缓存前需要创建命令池，命令池负责管理由它们分配的缓存和命令缓存。
+
+Outline of a frame：Vulkan绘制一帧的大概过程：1.等待上一帧绘制完成 2.从交换链中获取一个Image 3.将绘制场景的命令记录在命令缓存中 4. 提交记录好的命令缓存 5.展示交换链中的图片
+
+Semaphores：信号量，用于在队列操作之间添加顺序，队列操作指的是我们提交到队列中的工作，可以是命令缓存中的工作，也可以是函数调用。
+
+Fences：栅栏，作用与信号量类似，都是用来同步执行，但它是用来对CPU上的执行进行排序。
+
