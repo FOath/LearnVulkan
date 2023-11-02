@@ -30,3 +30,6 @@ Semaphores：信号量，用于在队列操作之间添加顺序，队列操作�
 
 Fences：栅栏，作用与信号量类似，都是用来同步执行，但它是用来对CPU上的执行进行排序。
 
+VertexInputBindingDescription: 顶点输入绑定描述符，描述了以何种速率从内存加载整个顶点的数据。
+
+VertexInputAttributeDescription: 顶点输入属性描述符，描述如何处理顶点数据。
