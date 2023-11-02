@@ -33,3 +33,7 @@ Fences：栅栏，作用与信号量类似，都是用来同步执行，但它�
 VertexInputBindingDescription: 顶点输入绑定描述符，描述了以何种速率从内存加载整个顶点的数据。
 
 VertexInputAttributeDescription: 顶点输入属性描述符，描述如何处理顶点数据。
+
+Pipeline vertex input: 设置图形管线以规定的顶点格式接收数据
+
+Buffer: 缓存，一片内存区域，用于存储显卡可读取的任意数据。先创建MemoryRequirements向显卡请求符合要求的内存，
