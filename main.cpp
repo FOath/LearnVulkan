@@ -271,16 +271,15 @@ private:
 	void cleanup()
 	{
 		cleanupSwapChain();
+		// pipeline
+		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 
-		vkDestroyImageView(device, depthImageView, nullptr);
-		vkDestroyImage(device, depthImage, nullptr);
-		vkFreeMemory(device, depthImageMemory, nullptr);
+		// pipeline layout
+		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 
-		vkDestroySampler(device, textureSampler, nullptr);
-		vkDestroyImageView(device, textureImageView, nullptr);
+		// render pass
+		vkDestroyRenderPass(device, renderPass, nullptr);
 
-		vkDestroyImage(device, textureImage, nullptr);
-		vkFreeMemory(device, textureImageMemory, nullptr);
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 		{
@@ -289,6 +288,12 @@ private:
 		}
 
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+
+		vkDestroySampler(device, textureSampler, nullptr);
+		vkDestroyImageView(device, textureImageView, nullptr);
+
+		vkDestroyImage(device, textureImage, nullptr);
+		vkFreeMemory(device, textureImageMemory, nullptr);
 
 		vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 
@@ -302,37 +307,20 @@ private:
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
 		{
 			vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-
 			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-
 			vkDestroyFence(device, inFlightFences[i], nullptr);
 		}
-		
-
 		// command pool
 		vkDestroyCommandPool(device, commandPool, nullptr);
-
-		// pipeline
-		vkDestroyPipeline(device, graphicsPipeline, nullptr);
-
-		// pipeline layout
-		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-
-		// render pass
-		vkDestroyRenderPass(device, renderPass, nullptr);
-
 		// logic device
 		vkDestroyDevice(device, nullptr);
-
 		// validation layer
 		if (enableValidationLayers)
 		{
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 		}
-
 		// surface
 		vkDestroySurfaceKHR(instance, surface, nullptr);
-
 		// instance
 		vkDestroyInstance(instance, nullptr);
 
@@ -668,7 +656,7 @@ private:
 	{
 		for (const auto& availableFormat : availableFormats)
 		{
-			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				return availableFormat;
 			}
@@ -721,9 +709,7 @@ private:
 		VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 		VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
 		VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
-		// set member value
-		swapChainImageFormat = surfaceFormat.format;
-		swapChainExtent = extent;
+
 
 		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
@@ -757,12 +743,12 @@ private:
 			createInfo.queueFamilyIndexCount = 0; // Optional
 			createInfo.pQueueFamilyIndices = nullptr; // Optional
 		}
+		std::cout << "imageSharingMode: " << createInfo.imageSharingMode << "\n";
 
 		createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 		createInfo.presentMode = presentMode;
 		createInfo.clipped = VK_TRUE;
-
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 		if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)
@@ -773,6 +759,10 @@ private:
 		vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
 		swapChainImages.resize(imageCount);
 		vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+
+		// set member value
+		swapChainImageFormat = surfaceFormat.format;
+		swapChainExtent = extent;
 	}
 
 	void createImageViews()
@@ -921,7 +911,7 @@ private:
 		pipelineInfo.pViewportState = &viewportState;
 		pipelineInfo.pRasterizationState = &rasterizer;
 		pipelineInfo.pMultisampleState = &multisampling;
-		pipelineInfo.pDepthStencilState = nullptr;
+		pipelineInfo.pDepthStencilState = &depthStencil;
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = pipelineLayout;
@@ -929,7 +919,6 @@ private:
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 		pipelineInfo.basePipelineIndex = -1;
-		pipelineInfo.pDepthStencilState = &depthStencil;
 
 		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
 		{
@@ -1026,7 +1015,7 @@ private:
 
 		if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to creaet render pass!");
+			throw std::runtime_error("failed to create render pass!");
 		}
 	}
 
@@ -1211,6 +1200,7 @@ private:
 		
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized)
 		{
+			framebufferResized = false;
 			recreateSwapChain();
 		}
 		else if (result != VK_SUCCESS)
@@ -1264,6 +1254,7 @@ private:
 	void recreateSwapChain()
 	{
 		int width = 0, height = 0;
+		glfwGetFramebufferSize(window, &width, &height);
 		while (width == 0 || height == 0)
 		{
 			glfwGetFramebufferSize(window, &width, &height);
@@ -1283,10 +1274,13 @@ private:
 
 	void cleanupSwapChain()
 	{
+		vkDestroyImageView(device, depthImageView, nullptr);
+		vkDestroyImage(device, depthImage, nullptr);
+		vkFreeMemory(device, depthImageMemory, nullptr);
+
 		vkDestroyImageView(device, colorImageView, nullptr);
 		vkDestroyImage(device, colorImage, nullptr);
 		vkFreeMemory(device, colorImageMemory, nullptr);
-
 
 		for (size_t i = 0; i < swapChainFramebuffers.size(); ++i)
 		{
@@ -1545,9 +1539,9 @@ private:
 
 		stbi_image_free(pixels);
 
-		createImage(texWidth, texHeight, mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+		createImage(texWidth, texHeight, mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 
-		transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+		transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
 
 		copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
@@ -1745,7 +1739,7 @@ private:
 
 	void createTextureImageView()
 	{
-		textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
+		textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
 	}
 
 	void createTextureSampler()
@@ -1980,9 +1974,7 @@ private:
 	void createColorResources()
 	{
 		VkFormat colorFormat = swapChainImageFormat;
-
 		createImage(swapChainExtent.width, swapChainExtent.height, 1, msaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorImage, colorImageMemory);
-		
 		colorImageView = createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 	}
 
