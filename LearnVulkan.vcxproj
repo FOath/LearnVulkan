@@ -154,6 +154,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\particleShader.comp" />
+    <None Include="shaders\pointShader.frag" />
+    <None Include="shaders\pointShader.vert" />
     <None Include="shaders\triangleShader.frag" />
     <None Include="shaders\triangleShader.vert" />
   </ItemGroup>

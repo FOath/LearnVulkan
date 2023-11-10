@@ -26,6 +26,15 @@
     <None Include="shaders\triangleShader.vert">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="shaders\particleShader.comp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\pointShader.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shaders\pointShader.vert">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tiny_obj_loader.h">
