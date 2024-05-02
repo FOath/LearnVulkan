@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;H:\LearnVulkan\external\tinygltf;$(IncludePath)</IncludePath>
     <LibraryPath>H:\LearnVulkan\external\ktx\lib;C:\Program Files\KTX-Software\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;H:\LearnVulkan\external\tinygltf;$(IncludePath)</IncludePath>
     <LibraryPath>H:\LearnVulkan\external\ktx\lib;C:\Program Files\KTX-Software\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;H:\LearnVulkan\external\tinygltf;$(IncludePath)</IncludePath>
     <LibraryPath>H:\LearnVulkan\external\ktx\lib;C:\Program Files\KTX-Software\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\VulkanSDK\1.3.261.1\Include;..\VulkanSDK\1.3.261.1\Include\glm;..\glfw-3.3.8.bin.WIN64\include;..\stb-master;C:\Program Files\KTX-Software\include;H:\LearnVulkan\external\tinygltf;$(IncludePath)</IncludePath>
     <LibraryPath>H:\LearnVulkan\external\ktx\lib;C:\Program Files\KTX-Software\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -161,10 +161,12 @@
     <ClCompile Include="external\imgui\imgui_draw.cpp" />
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pushconstants.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanDevice.cpp" />
     <ClCompile Include="vulkanexamplebase.cpp" />
+    <ClCompile Include="VulkanglTFModel.cpp" />
     <ClCompile Include="VulkanSwapChain.cpp" />
     <ClCompile Include="VulkanTexture.cpp" />
     <ClCompile Include="VulkanTools.cpp" />
@@ -194,6 +196,7 @@
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanDevice.h" />
     <ClInclude Include="vulkanexamplebase.h" />
+    <ClInclude Include="VulkanglTFModel.h" />
     <ClInclude Include="VulkanInitializers.hpp" />
     <ClInclude Include="VulkanSwapChain.h" />
     <ClInclude Include="VulkanTexture.h" />
